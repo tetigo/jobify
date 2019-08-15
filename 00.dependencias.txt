@@ -1,0 +1,28 @@
+package's home:
+https://www.npmjs.com
+
+npm init - wizard pra criar package.json
+
+de posse do package.json, pode-se instalar 
+pacotes de terceiros.
+
+npm install --save express
+
+É instalado, chave é inserida no packages.json
+e é criado pasta node_modules contendo os instalados
+essa pasta nao precisa compartilhar. Apenas package.json
+
+Ao receber um projeto contendo package.json basta usar:
+npm install e todas as dependencias serão instaladas.
+------------------
+linguagem de template
+
+npm install ejs
+
+
+
+
+
+
+
+

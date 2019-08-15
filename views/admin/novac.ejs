@@ -1,0 +1,18 @@
+<%- include header %>
+<p><a href="<%=href%>">Voltar</a></p>
+<h2>
+    Nova Categoria:
+    <a href="/admin/categorias">Categorias</a>
+</h2>
+    <div>
+        <form method="POST" action="/admin/categorias/nova">
+            <div><label>Categoria</label></div>
+            <div><input type="text" name="cat"></div>
+            <div><button>Enviar</button></div>
+        </form>
+    </div>
+<%- include footer %>
+
+
+
+
