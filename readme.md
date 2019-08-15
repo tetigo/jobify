@@ -1,4 +1,5 @@
-### [Jobify](https://jobify.tetigo.now.sh "Link do Site")
+### [Jobify](https://jobify.tetigo.now.sh "Link do Site"){:target="_blank"}
+
 ###### Objetivo
 
 Incluir rapidamente vagas de trabalho disponíveis.
@@ -22,11 +23,11 @@ Desenvolvido utilizando as seguintes tecnologias e ferramentas:
 - SourceTree
 - VSCode
 
-[Link do Site](https://jobify.tetigo.now.sh "Link do Projeto")
+[Link do Site](https://jobify.tetigo.now.sh "Link do Projeto"){:target="_blank"}
 
 ------------
 
 
-Curso: Fullstack Master [DevPleno](https://www.devpleno.com/ "DevPleno")
+Curso: Fullstack Master [DevPleno](https://www.devpleno.com/ "DevPleno"){:target="_blank"}
 
 Tiago Mendes tetigo@gmail.com
