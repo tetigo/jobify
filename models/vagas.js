@@ -1,4 +1,4 @@
-const getVagas = async db => {
+const getVagas = db => async() => {
     const vagas = await db.all('select * from vagas;')
     return vagas
 }

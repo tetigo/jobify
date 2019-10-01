@@ -1,16 +1,16 @@
 <%- include header %>
+<p><a href="<%=href%>">Voltar</a></p>
 <h2>
     Admin Categorias:
     <a href="/admin/categorias/nova">Nova Categoria</a>
 </h2>
-<p><a href="<%=href%>">Voltar</a></p>
 <%categorias.forEach(cat=>{ %>
     <div>
         <ul>
             <li>                
                 <%- cat.categoria %> | 
                 <a href="/admin/categorias/edit/<%-cat.id%>">Editar</a> | 
-                <a href="/admin/categorias/delete/<%-cat.id%>">Excluir</a>
+                <a href="/admin/categorias/delete/<%-cat.id%>" onclick="return confirm('Certeza??')">Excluir</a>
             </li>
         </ul>
     </div>

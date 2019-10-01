@@ -10,7 +10,7 @@
             <li>                
                 <%- vaga.titulo %> | 
                 <a href="/admin/vagas/edit/<%-vaga.id%>">Editar</a> | 
-                <a href="/admin/vagas/delete/<%-vaga.id%>">Excluir</a> 
+                <a href="/admin/vagas/delete/<%-vaga.id%>" onclick="return confirm('Certeza??')">Excluir</a> 
             </li>
         </ul>
     </div>
