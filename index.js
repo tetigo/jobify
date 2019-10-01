@@ -14,6 +14,7 @@ const vagasModel = require('./models/vagas')
 
 const port = process.env.PORT || 3000
 
+
 app.use('/admin', (req, res, next)=>{
     if(req.hostname === 'localhost'){
         next()
@@ -22,13 +23,19 @@ app.use('/admin', (req, res, next)=>{
     }
 })
 
+app.use(async(req,res,next)=>{
+    global.db = await conn
+    next()
+})
+
+
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname,'public')))
 app.use(bodyParser.urlencoded({extended: true}))
 
 app.get('/', async(request, response)=>{
-    const db = await conn
+    // const db = await conn
     const categorias = await categoriasModel.getCategorias(db)
     const vagas = await vagasModel.getVagas(db)
     const newCategorias = categorias.map(cat=>{
@@ -43,7 +50,7 @@ app.get('/', async(request, response)=>{
 
 app.get('/vaga/:id', async(request, response)=>{
     const id = request.params.id
-    const db = await conn
+    // const db = await conn
     const vaga = await vagasModel.getVagaById(db)(id)
     response.locals.href = '/'
     response.render('vaga',{vaga})
@@ -55,7 +62,7 @@ app.get('/admin', (req, res)=>{
 })
 
 app.get('/admin/vagas', async(req, res)=>{
-    const db = await conn
+    // const db = await conn
     // const vagas = await db.all('select * from vagas;')
     const vagas = await vagasModel.getVagas(db)
     res.locals.href = '/admin'
@@ -63,7 +70,7 @@ app.get('/admin/vagas', async(req, res)=>{
 })
 
 app.get('/admin/categorias', async(req,res)=>{
-    const db = await conn
+    // const db = await conn
     const categorias = await categoriasModel.getCategorias(db)
     res.locals.href = '/admin'
     res.render('admin/categorias',{categorias})
@@ -71,14 +78,14 @@ app.get('/admin/categorias', async(req,res)=>{
 
 app.get('/admin/vagas/delete/:id', async(req,res)=>{
     const id = req.params.id
-    const db = await conn
+    // const db = await conn
     const test = await vagasModel.deleteVagaById(db)(id)
     console.log(test)
     res.redirect('/admin/vagas')
 })
 
 app.get('/admin/vagas/nova', async(req, res)=>{
-    const db = await conn
+    // const db = await conn
     const categorias = await categoriasModel.getCategorias(db)
     res.locals.href = '/admin'
     res.render('admin/nova', {categorias})
@@ -86,7 +93,7 @@ app.get('/admin/vagas/nova', async(req, res)=>{
 
 app.post('/admin/vagas/nova', async(req, res)=>{
     // res.send(req.body)
-    const db = await conn
+    // const db = await conn
     const test = await vagasModel.insertNewVaga(db)(req.body)
     res.locals.href = '/admin'
     res.redirect('/admin/vagas')
@@ -94,7 +101,7 @@ app.post('/admin/vagas/nova', async(req, res)=>{
 
 app.get('/admin/vagas/edit/:id', async(req, res)=>{
     const id = req.params.id
-    const db = await conn
+    // const db = await conn
     const categorias = await categoriasModel.getCategorias(db)
     const vaga = await vagasModel.getVagaById(db)(id)
     res.locals.href = '/admin'
@@ -109,7 +116,7 @@ app.post('/admin/vagas/edit/:id', async(req, res)=>{
         ...req.body,
         id: req.params.id
     }
-    const db = await conn
+    // const db = await conn
     const temp = await vagasModel.updataVagaById(db)(obj)
     res.locals.href = '/admin'
     res.redirect('/admin/vagas')
@@ -122,7 +129,7 @@ app.get('/admin/categorias/nova', (req, res)=>{
 
 app.post('/admin/categorias/nova', async(req, res)=>{
     // const {cat} = req.body
-    const db = await conn
+    // const db = await conn
     const nada = await categoriasModel.insertNewCategoria(db)(req.body)
     res.locals.href='/admin'
     res.redirect('/admin/categorias')
@@ -130,14 +137,14 @@ app.post('/admin/categorias/nova', async(req, res)=>{
 
 app.get('/admin/categorias/delete/:id', async(req, res)=>{
     // res.send(id)
-    const db = await conn
+    // const db = await conn
     const nada = await categoriasModel.deleteCategoriaById(db)(req.params.id)
     res.locals.href = '/admin'
     res.redirect('/admin/categorias')
 })
 
 app.get('/admin/categorias/edit/:id', async(req, res)=>{
-    const db = await conn
+    // const db = await conn
     const categoria = await categoriasModel.getCategoriaById(db)(req.params.id)
     res.locals.href='/admin'
     res.render('admin/editarc',{categoria})
@@ -148,7 +155,7 @@ app.post('/admin/categorias/edit/:id', async(req, res)=>{
         categoria: req.body.cat,
         id: req.params.id
     }
-    const db = await conn
+    // const db = await conn
     const test = await categoriasModel.updateCategoriaById(db)(obj)
     res.locals.href='/admin'
     res.redirect('/admin/categorias')
