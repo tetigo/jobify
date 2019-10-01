@@ -8,6 +8,10 @@ const sqlite = require('sqlite')
 const conn = sqlite.open(path.resolve(__dirname,'banco.sqlite'),{Promise})
 const process = require('process')
 
+
+const categoriasModel = require('./models/categorias')
+const vagasModel = require('./models/vagas')
+
 const port = process.env.PORT || 3000
 
 app.use('/admin', (req, res, next)=>{
@@ -25,30 +29,22 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 app.get('/', async(request, response)=>{
     const db = await conn
-    const categoriasDB = await db.all('select * from categorias;')
-    // console.log(categoriasDB)
-    const vagas = await db.all('select * from vagas;')
-    // console.log(vagas)
-    const categorias = categoriasDB.map(cat=>{
+    const categorias = await categoriasModel.getCategorias(db)
+    const vagas = await vagasModel.getVagas(db)
+    const newCategorias = categorias.map(cat=>{
         return {
             ...cat,
             vagas: vagas.filter(vaga=> vaga.categoria === cat.id)
         }
     })
-    console.log(categorias)
-    // console.log(new Date())
-    // response.send('<h2>Hi, Fulll</h2>')
     response.locals.href = '/'
-    response.render('home', {categorias})
+    response.render('home', {categorias:newCategorias})
 })
 
 app.get('/vaga/:id', async(request, response)=>{
     const id = request.params.id
     const db = await conn
-    const vaga = await db.get(`select * from vagas where id = ${id};`)
-    // console.log(new Date())
-    console.log(vaga)
-    console.log(typeof(vaga))
+    const vaga = await vagasModel.getVagaById(db)(id)
     response.locals.href = '/'
     response.render('vaga',{vaga})
 })
@@ -60,14 +56,15 @@ app.get('/admin', (req, res)=>{
 
 app.get('/admin/vagas', async(req, res)=>{
     const db = await conn
-    const vagas = await db.all('select * from vagas;')
+    // const vagas = await db.all('select * from vagas;')
+    const vagas = await vagasModel.getVagas(db)
     res.locals.href = '/admin'
     res.render('admin/vagas',{vagas})
 })
 
 app.get('/admin/categorias', async(req,res)=>{
     const db = await conn
-    const categorias = await db.all('select * from categorias;')
+    const categorias = await categoriasModel.getCategorias(db)
     res.locals.href = '/admin'
     res.render('admin/categorias',{categorias})
 })
@@ -75,26 +72,22 @@ app.get('/admin/categorias', async(req,res)=>{
 app.get('/admin/vagas/delete/:id', async(req,res)=>{
     const id = req.params.id
     const db = await conn
-    const test = await db.run(`delete from vagas where id = ${id};`)
+    const test = await vagasModel.deleteVagaById(db)(id)
     console.log(test)
     res.redirect('/admin/vagas')
 })
 
 app.get('/admin/vagas/nova', async(req, res)=>{
     const db = await conn
-    const categorias = await db.all('select * from categorias;')
+    const categorias = await categoriasModel.getCategorias(db)
     res.locals.href = '/admin'
     res.render('admin/nova', {categorias})
 })
 
 app.post('/admin/vagas/nova', async(req, res)=>{
     // res.send(req.body)
-    // console.log(req.body)
-    const {tit, desc, cat} = req.body
-    console.log(tit, desc, cat)
-    // return
     const db = await conn
-    const test = await db.run(`insert into vagas(categoria, titulo, descricao) values (${cat},'${tit}', '${desc}');`)
+    const test = await vagasModel.insertNewVaga(db)(req.body)
     res.locals.href = '/admin'
     res.redirect('/admin/vagas')
 })
@@ -102,19 +95,22 @@ app.post('/admin/vagas/nova', async(req, res)=>{
 app.get('/admin/vagas/edit/:id', async(req, res)=>{
     const id = req.params.id
     const db = await conn
-    const categorias = await db.all('select * from categorias;')
-    const vaga = await db.get(`select * from vagas where id = ${id}`)
+    const categorias = await categoriasModel.getCategorias(db)
+    const vaga = await vagasModel.getVagaById(db)(id)
     res.locals.href = '/admin'
     res.render('admin/editar', {categorias, vaga})
 })
 
 app.post('/admin/vagas/edit/:id', async(req, res)=>{
     // res.send(req.body)
-    const id = req.params.id
-    const {tit, desc, cat} = req.body
-    // console.log(tit, desc, cat)
+    // const id = req.params.id
+    // const {tit, desc, cat} = req.body
+    const obj = {
+        ...req.body,
+        id: req.params.id
+    }
     const db = await conn
-    const temp = await db.run(`update vagas set titulo='${tit}',descricao='${desc}',categoria=${cat} where id=${id}`)
+    const temp = await vagasModel.updataVagaById(db)(obj)
     res.locals.href = '/admin'
     res.redirect('/admin/vagas')
 })
@@ -125,35 +121,35 @@ app.get('/admin/categorias/nova', (req, res)=>{
 })
 
 app.post('/admin/categorias/nova', async(req, res)=>{
-    const {cat} = req.body
+    // const {cat} = req.body
     const db = await conn
-    await db.run(`insert into categorias(categoria) values('${cat}')`)
+    const nada = await categoriasModel.insertNewCategoria(db)(req.body)
     res.locals.href='/admin'
     res.redirect('/admin/categorias')
 })
 
 app.get('/admin/categorias/delete/:id', async(req, res)=>{
-    const id = req.params.id
     // res.send(id)
     const db = await conn
-    await db.run(`delete from categorias where id = ${id}`)
+    const nada = await categoriasModel.deleteCategoriaById(db)(req.params.id)
     res.locals.href = '/admin'
     res.redirect('/admin/categorias')
 })
 
 app.get('/admin/categorias/edit/:id', async(req, res)=>{
-    const id = req.params.id
     const db = await conn
-    const categoria = await db.get(`select * from categorias where id = ${id}`)
+    const categoria = await categoriasModel.getCategoriaById(db)(req.params.id)
     res.locals.href='/admin'
     res.render('admin/editarc',{categoria})
 })
 
 app.post('/admin/categorias/edit/:id', async(req, res)=>{
-    const id = req.params.id
-    const categoria = req.body.cat
+    const obj = {
+        categoria: req.body.cat,
+        id: req.params.id
+    }
     const db = await conn
-    const test = db.run(`update categorias set categoria = '${categoria}' where id = ${id}`)
+    const test = await categoriasModel.updateCategoriaById(db)(obj)
     res.locals.href='/admin'
     res.redirect('/admin/categorias')
 })
