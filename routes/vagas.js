@@ -1,7 +1,7 @@
 const init = conn => {
     const vagasController = require('../controllers/vagas')
     const router = require('express').Router()
-    router.get('/vaga/:id', vagasController.getVagaById(conn))
+    router.get('/:id', vagasController.getVagaById(conn))
 
     return router
 }

@@ -24,6 +24,7 @@ const vagasRouter = require('./routes/vagas')
 const adminVagasRouter = require('./routes/admin/vagas')
 const adminCategoriasRouter = require('./routes/admin/categorias')
 
+const routes = require('./routes') //arq. index não precisa colocar devido nome ser carregado por padrao
 
 const port = process.env.PORT || 3000
 
@@ -43,31 +44,12 @@ app.use(express.static(path.join(__dirname,'public')))
 app.use(bodyParser.urlencoded({extended: true}))
 
 
-// app.get('/', categoriasController.getCategorias(conn))
-// app.get('/vaga/:id', vagasController.getVagaById(conn))
+// app.use(categoriasRouter(conn))
+// app.use(vagasRouter(conn))
+// app.use(adminVagasRouter(conn))
+// app.use(adminCategoriasRouter(conn))
 
-app.use(categoriasRouter(conn))
-app.use(vagasRouter(conn))
-
-// app.get('/admin', adminHomeController.adminGetHome)
-// app.get('/admin/vagas', adminVagasController.adminGetVagas(conn))
-// app.get('/admin/vagas/delete/:id', adminVagasController.adminDeleteVagaById(conn))
-// app.get('/admin/vagas/nova', adminVagasController.adminInsereVaga(conn))
-// app.post('/admin/vagas/nova', adminVagasController.adminInsereVaga2(conn))
-// app.get('/admin/vagas/edit/:id', adminVagasController.adminUpdateVaga(conn))
-// app.post('/admin/vagas/edit/:id', adminVagasController.adminUpdateVaga2(conn))
-
-app.use(adminVagasRouter(conn))
-
-// app.get('/admin/categorias', adminCategoriasController.adminGetCategorias(conn))
-// app.get('/admin/categorias/nova', adminCategoriasController.adminInsereCategoria)
-// app.post('/admin/categorias/nova', adminCategoriasController.adminInsereCategoria2(conn))
-// app.get('/admin/categorias/delete/:id', adminCategoriasController.adminDeleteCategoriaById(conn))
-// app.get('/admin/categorias/edit/:id', adminCategoriasController.adminUpdateCategoria(conn))
-// app.post('/admin/categorias/edit/:id', adminCategoriasController.adminUpdateCategoria2(conn))
-
-app.use(adminCategoriasRouter(conn))
-
+app.use(routes(conn))
 
 // usado somente para teste
 // const init = async()=>{
