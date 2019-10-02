@@ -5,8 +5,9 @@ const init = conn => {
     const path = require('path')
     const process = require('process')
     
-    
-    const routes = require('./routes') //arq. index não precisa colocar devido nome ser carregado por padrao
+    //arq. index não precisa colocar devido nome ser carregado por padrao
+    //const routes = require('./routes/index') 
+    const routes = require('./routes') 
     
     app.use('/admin', (req, res, next)=>{
         if(req.hostname === 'localhost'){
